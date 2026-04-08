@@ -12,6 +12,38 @@
     <link rel="icon" type="image/png" href="Favicon/Favicon.png">
     <link rel="icon" sizes="192x192" href="Favicon/Twin Sheet logo 192 x 192.png">
     <link rel="apple-touch-icon" href="Favicon/Twin Sheet logo 192 x 192.png">
+
+    <!-- SEO & Social Sharing -->
+    <meta name="description" content="Savor the finest sandwiches at Twin Sheets. Explore our premium digital menu for Cheese Specials, Club Sandwiches, and more. One stop for sandwich lovers.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Twin Sheets | One Stop For Sandwich Lovers">
+    <meta property="og:description" content="Explore our gourmet digital menu. Premium taste, modern style.">
+    <meta property="og:image" content="logo/1.png">
+    <meta property="twitter:card" content="summary_large_image">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Twin Sheets",
+      "image": "logo/1.png",
+      "servesCuisine": "Sandwiches",
+      "description": "One Stop For Sandwich Lovers",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Silver Nest 2, Shop No 7, Ayodhya Chowk, Ring Road, 150tft",
+        "addressLocality": "Rajkot",
+        "addressRegion": "Gujarat",
+        "postalCode": "360007",
+        "addressCountry": "IN"
+      },
+      "telephone": "+919904121023"
+    }
+    </script>
+    
+    <!-- FontAwesome for Brand Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,6 +102,91 @@
             box-shadow: 0 0 10px var(--accent);
         }
 
+        /* --- Cinematic Preloader --- */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 1s cubic-bezier(0.23, 1, 0.32, 1), visibility 1s;
+        }
+
+        .preloader-logo {
+            max-width: 220px;
+            width: 60%;
+            animation: pulse-glow 2.5s infinite ease-in-out;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.2));
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(0.93); opacity: 0.5; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.1)); }
+            50% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.5)); }
+        }
+
+        body.loaded #preloader {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- Google Review Banner --- */
+        .review-cta {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 30px 20px;
+            text-align: center;
+            margin: 60px 0 20px;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .stars {
+            color: var(--accent);
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .stars i {
+            animation: star-pulse 2.5s infinite ease-in-out;
+        }
+        .stars i:nth-child(2) { animation-delay: 0.2s; }
+        .stars i:nth-child(3) { animation-delay: 0.4s; }
+        .stars i:nth-child(4) { animation-delay: 0.6s; }
+        .stars i:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes star-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 15px var(--accent)); }
+        }
+
+        .review-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .review-link {
+            display: inline-block;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 4px;
+            transition: var(--transition);
+        }
+
+        .review-link:hover { border-color: var(--accent); }
+
         /* Abstract Blobs */
         .blob {
             position: fixed;
@@ -92,21 +209,23 @@
         }
 
         .logo {
-            max-height: 160px;
+            max-height: 140px;
             width: auto;
-            max-width: 85%;
+            max-width: 80%;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
             transition: var(--transition);
         }
 
+        header.scrolled .logo { max-height: 50px; }
+
         .tagline {
             font-family: 'Syne', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-top: 15px;
-            opacity: 0.8;
+            letter-spacing: 3px;
+            margin-top: 12px;
+            opacity: 0.9;
         }
 
         /* --- Category Dock: Modern & Kinetic --- */
@@ -238,15 +357,16 @@
 
         .dock-item i {
             display: block;
-            width: 24px;
-            height: 24px;
+            font-size: 1.5rem;
+            margin-bottom: 4px;
         }
 
         .dock-item span {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #888;
+            opacity: 0.7;
         }
 
         .dock-item.active-call { color: #4ade80; }
@@ -308,6 +428,10 @@
     </style>
 </head>
 <body>
+
+    <div id="preloader">
+        <img src="logo/1.png" alt="Twin Sheets Loading..." class="preloader-logo">
+    </div>
 
     <div id="scroll-progress"></div>
     <div id="lightbox">
@@ -411,29 +535,46 @@
                 <img src="Menu Images/Packet chaat.jpg" alt="Chaat" class="menu-image" loading="lazy">
             </div>
         </div>
+
+        <!-- Google Review Section -->
+        <div class="review-cta">
+            <div class="stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+            </div>
+            <h3 class="review-title">Loved the Sandwich?</h3>
+            <a href="https://share.google/P4tXU3f756nKj1cHx" target="_blank" class="review-link">Tap to rate us on Google</a>
+        </div>
     </div>
 
     <footer>
         <div class="footer-logo">Twin Sheets</div>
         <p>ONE STOP FOR SANDWICH LOVERS</p>
+        <p style="margin-top: 15px; font-size: 0.75rem; color: #888; line-height: 1.4;">
+            Mr.Sandwichwala, Silver Nest 2, Shop No 7,<br>
+            Ayodhya Chowk, Ring Road, 150tft, Rajkot
+        </p>
     </footer>
 
     <!-- Bottom Action Dock -->
     <div class="bottom-dock">
-        <a href="https://maps.google.com" target="_blank" class="dock-item active-map">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/></svg>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=Mr.Sandwichwala+Silver+Nest+2+Rajkot" target="_blank" class="dock-item active-map">
+            <i class="fa-solid fa-location-dot"></i>
             <span>Location</span>
         </a>
-        <a href="https://wa.me/1234567890" target="_blank" class="dock-item active-wa">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12.04,2C6.58,2,2.13,6.45,2.13,11.91C2.13,13.66,2.59,15.36,3.45,16.86L2.05,22L7.3,20.62C8.75,21.41,10.38,21.83,12.04,21.83C17.5,21.83,21.95,17.38,21.95,11.92C21.95,9.27,20.92,6.78,19.05,4.91C17.18,3.03,14.69,2,12.04,2M12.05,3.67C11.99,4.11,12.02,4.11,12.05,3.67Z"/></svg>
+        <a href="https://wa.me/919904121023" target="_blank" class="dock-item active-wa">
+            <i class="fa-brands fa-whatsapp"></i>
             <span>WhatsApp</span>
         </a>
-        <a href="tel:1234567890" class="dock-item active-call">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82,16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21C10.61,21 3,13.39 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
+        <a href="tel:+919904121023" class="dock-item active-call">
+            <i class="fa-solid fa-phone"></i>
             <span>Call</span>
         </a>
         <a href="#" class="dock-item" id="nav-top">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"/></svg>
+            <i class="fa-solid fa-chevron-up"></i>
             <span>Top</span>
         </a>
     </div>
@@ -458,14 +599,17 @@
             let current = "";
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (window.scrollY >= (sectionTop - 150)) {
+                if (window.scrollY >= (sectionTop - 250)) {
                     current = section.getAttribute('id');
                 }
             });
 
+            // Fix: If explicitly near the top, reset to first category
+            if (window.scrollY < 50) current = sections[0].getAttribute('id');
+
             chips.forEach(chip => {
                 chip.classList.remove('active');
-                if (chip.getAttribute('href').includes(current)) {
+                if (current && chip.getAttribute('href').includes(current)) {
                     chip.classList.add('active');
                     chip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
@@ -509,6 +653,13 @@
         document.getElementById('nav-top').addEventListener('click', (e) => {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Preloader Exit
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 3000); // 3s duration for impact
         });
     </script>
 </body>

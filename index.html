@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Twin Sheets | One Stop For Sandwich Lovers</title>
+    
+    <!-- PWA & Mobile Meta -->
+    <meta name="theme-color" content="#050505">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="Favicon/Favicon.png">
+    <link rel="icon" sizes="192x192" href="Favicon/Twin Sheet logo 192 x 192.png">
+    <link rel="apple-touch-icon" href="Favicon/Twin Sheet logo 192 x 192.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #FFFFFF;
+            --accent: #D4AF37; 
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-deep: rgba(0, 0, 0, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Noise Texture Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 9999;
+            filter: contrast(150%) brightness(150%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Scroll Progress Bar --- */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), #fff);
+            width: 0%;
+            z-index: 2000;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Abstract Blobs */
+        .blob {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Header: Mobile Optimized --- */
+        header {
+            padding: 25px 20px;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--bg), transparent);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            max-height: 160px;
+            width: auto;
+            max-width: 85%;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            transition: var(--transition);
+        }
+
+        .tagline {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-top: 15px;
+            opacity: 0.8;
+        }
+
+        /* --- Category Dock: Modern & Kinetic --- */
+        .nav-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 10px 0;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .category-nav {
+            display: flex;
+            padding: 5px 15px;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .category-nav::-webkit-scrollbar { display: none; }
+
+        .cat-chip {
+            padding: 10px 20px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #888;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .cat-chip.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            font-weight: 600;
+            transform: scale(1.05);
+        }
+
+        /* Visual Haptics */
+        .cat-chip:active, .dock-item:active {
+            transform: scale(0.92);
+        }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 15px 120px 15px;
+        }
+
+        .menu-section {
+            margin-bottom: 70px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .sec-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+
+        /* Image Display */
+        .image-card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--glass-border);
+            background: #111;
+        }
+
+        .menu-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: zoom-in;
+        }
+
+        /* --- Bottom Action Dock --- */
+        .bottom-dock {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            margin-bottom: var(--safe-bottom);
+        }
+
+        .dock-item {
+            color: var(--secondary);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: var(--transition);
+        }
+
+        .dock-item i {
+            display: block;
+            width: 24px;
+            height: 24px;
+        }
+
+        .dock-item span {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+        }
+
+        .dock-item.active-call { color: #4ade80; }
+        .dock-item.active-wa { color: #22c55e; }
+        .dock-item.active-map { color: #60a5fa; }
+
+        /* --- Fullscreen Lightbox --- */
+        #lightbox {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        #lightbox img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 50px 20px 140px;
+            background: linear-gradient(to top, #000, transparent);
+        }
+
+        .footer-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        footer p { color: #444; font-size: 0.7rem; letter-spacing: 2px; }
+
+        /* Icon SVG Utility */
+        .icon-svg { fill: currentColor; width: 24px; height: 24px; }
+    </style>
+</head>
+<body>
+
+    <div id="scroll-progress"></div>
+    <div id="lightbox">
+        <div class="close-lightbox">&times;</div>
+        <img src="" alt="Full Menu View">
+    </div>
+
+    <div class="blob" style="top: 5%; right: -100px;"></div>
+    
+    <header>
+        <img src="logo/1.png" alt="Twin Sheets Logo" class="logo">
+        <p class="tagline">One Stop For Sandwich Lovers</p>
+    </header>
+
+    <div class="nav-wrapper">
+        <nav class="category-nav">
+            <a href="#real-regular" class="cat-chip active">Regular</a>
+            <a href="#cheese-special" class="cat-chip">Cheese</a>
+            <a href="#club-sandwich" class="cat-chip">Club</a>
+            <a href="#dessert" class="cat-chip">Dessert</a>
+            <a href="#signature" class="cat-chip">Signature</a>
+            <a href="#sides" class="cat-chip">Sides</a>
+            <a href="#chaat" class="cat-chip">Chaat</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <!-- Section 1 -->
+        <div id="real-regular" class="menu-section">
+            <div class="section-header">
+                <span class="sec-num">01.</span>
+                <h2 class="section-title">Real & Regular</h2>
+            </div>
+            <div class="image-card">
+                <img src="Menu Images/Real & Regular.jpg" alt="Real & Regular" class="menu-image" loading="lazy">
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div id="cheese-special" class="menu-section">
+            <div class="section-header">
+                <span class="sec-num">02.</span>
+                <h2 class="section-title">Cheese Special</h2>
+            </div>
+            <div class="image-card">
+                <img src="Menu Images/Cheese Special.jpg" alt="Cheese Special" class="menu-image" loading="lazy">
+            </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div id="club-sandwich" class="menu-section">
+            <div class="section-header">
+                <span class="sec-num">03.</span>
+                <h2 class="section-title">Club Sandwich</h2>
+            </div>
+            <div class="image-card">
+                <img src="Menu Images/Club Sandwich.jpg" alt="Club Sandwich" class="menu-image" loading="lazy">
+            </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div id="dessert" class="menu-section">
+            <div class="section-header">
+                <span class="sec-num">04.</span>
+                <h2 class="section-title">Dessert Sandwich</h2>
+            </div>
+            <div class="image-card">
+                <img src="Menu Images/Dessert Sandwich.jpg" alt="Dessert Sandwich" class="menu-image" loading="lazy">
+            </div>
+        </div>
+
+        <!-- Section 5 -->
+        <div id="signature" class="menu-section">
+            <div class="section-header">
+                <span class="sec-num">05.</span>
+                <h2 class="section-title">Signature Special</h2>
+            </div>
+            <div class="image-card">
+                <img src="Menu Images/Signature Special & Pasta.jpg" alt="Signature Special" class="menu-image" loading="lazy">
+            </div>
+        </div>
+
+        <!-- Section 6 -->
+        <div id="sides" class="menu-section">
+            <div class="section-header">
+                <span class="sec-num">06.</span>
+                <h2 class="section-title">Sides & Fries</h2>
+            </div>
+            <div class="image-card">
+                <img src="Menu Images/Garlic Bread And French Fries.jpg" alt="Sides" class="menu-image" loading="lazy">
+            </div>
+        </div>
+
+        <!-- Section 7 -->
+        <div id="chaat" class="menu-section">
+            <div class="section-header">
+                <span class="sec-num">07.</span>
+                <h2 class="section-title">Packet Chaat</h2>
+            </div>
+            <div class="image-card">
+                <img src="Menu Images/Packet chaat.jpg" alt="Chaat" class="menu-image" loading="lazy">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-logo">Twin Sheets</div>
+        <p>ONE STOP FOR SANDWICH LOVERS</p>
+    </footer>
+
+    <!-- Bottom Action Dock -->
+    <div class="bottom-dock">
+        <a href="https://maps.google.com" target="_blank" class="dock-item active-map">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12,2C8.13,2,5,5.13,5,9c0,5.25,7,13,7,13s7-7.75,7-13C19,5.13,15.87,2,12,2z M12,11.5c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5S13.38,11.5,12,11.5z"/></svg>
+            <span>Location</span>
+        </a>
+        <a href="https://wa.me/1234567890" target="_blank" class="dock-item active-wa">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12.04,2C6.58,2,2.13,6.45,2.13,11.91C2.13,13.66,2.59,15.36,3.45,16.86L2.05,22L7.3,20.62C8.75,21.41,10.38,21.83,12.04,21.83C17.5,21.83,21.95,17.38,21.95,11.92C21.95,9.27,20.92,6.78,19.05,4.91C17.18,3.03,14.69,2,12.04,2M12.05,3.67C11.99,4.11,12.02,4.11,12.05,3.67Z"/></svg>
+            <span>WhatsApp</span>
+        </a>
+        <a href="tel:1234567890" class="dock-item active-call">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82,16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21C10.61,21 3,13.39 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
+            <span>Call</span>
+        </a>
+        <a href="#" class="dock-item" id="nav-top">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"/></svg>
+            <span>Top</span>
+        </a>
+    </div>
+
+    <script>
+        const progressBar = document.getElementById('scroll-progress');
+        const chips = document.querySelectorAll('.cat-chip');
+        const sections = document.querySelectorAll('.menu-section');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        const closeLightbox = document.querySelector('.close-lightbox');
+
+        // Scroll Logic
+        window.addEventListener('scroll', () => {
+            // Progress Bar
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + "%";
+
+            // Active Category Chip
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            chips.forEach(chip => {
+                chip.classList.remove('active');
+                if (chip.getAttribute('href').includes(current)) {
+                    chip.classList.add('active');
+                    chip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            });
+        });
+
+        // Lightbox Logic
+        document.querySelectorAll('.menu-image').forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxImg.src = img.src;
+                lightbox.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        closeLightbox.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target !== lightboxImg) {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Smooth Scroll
+        chips.forEach(chip => {
+            chip.addEventListener('click', e => {
+                e.preventDefault();
+                const targetId = chip.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                const offset = 100;
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+            });
+        });
+
+        document.getElementById('nav-top').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

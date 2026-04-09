@@ -346,7 +346,7 @@
         }
 
         .dock-item {
-            color: var(--secondary);
+            color: var(--accent);
             text-decoration: none;
             display: flex;
             flex-direction: column;
@@ -369,9 +369,11 @@
             opacity: 0.7;
         }
 
-        .dock-item.active-call { color: #4ade80; }
-        .dock-item.active-wa { color: #22c55e; }
-        .dock-item.active-map { color: #60a5fa; }
+        /* Unified Color Scheme */
+        .dock-item.active-call,
+        .dock-item.active-wa,
+        .dock-item.active-ig,
+        .dock-item.active-map { color: var(--accent); }
 
         /* --- Fullscreen Lightbox --- */
         #lightbox {
@@ -422,6 +424,49 @@
         }
 
         footer p { color: #444; font-size: 0.7rem; letter-spacing: 2px; }
+
+        /* Delivery Partners Styling */
+        .delivery-partners {
+            margin: 25px 0;
+            text-align: center;
+        }
+        .partner-tag {
+            font-size: 0.6rem;
+            color: #666;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .partner-grid {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .partner-logo {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        .partner-logo:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+        .partner-logo img {
+            width: auto;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+        .partner-logo.logo-zomato img { height: 16px; }
+        .partner-logo.logo-swiggy img { height: 26px; }
+        .partner-logo:hover img {
+            transform: scale(1.08);
+        }
 
         /* Icon SVG Utility */
         .icon-svg { fill: currentColor; width: 24px; height: 24px; }
@@ -553,21 +598,41 @@
     <footer>
         <div class="footer-logo">Twin Sheets</div>
         <p>ONE STOP FOR SANDWICH LOVERS</p>
+
+        <div class="delivery-partners">
+            <p class="partner-tag">Order Online</p>
+            <div class="partner-grid">
+                <a href="https://zomato.onelink.me/xqzv/8pkwk48m" target="_blank" class="partner-logo logo-zomato">
+                    <img src="logo/zomato.png" alt="Zomato">
+                </a>
+                <a href="https://www.swiggy.com/menu/1311561?source=sharing" target="_blank" class="partner-logo logo-swiggy">
+                    <img src="logo/swiggy.png" alt="Swiggy">
+                </a>
+            </div>
+        </div>
+
         <p style="margin-top: 15px; font-size: 0.75rem; color: #888; line-height: 1.4;">
             Mr.Sandwichwala, Silver Nest 2, Shop No 7,<br>
-            Ayodhya Chowk, Ring Road, 150tft, Rajkot
+            Ayodhya Chowk, Ring Road, 150ft, Rajkot
+        </p>
+
+        <p style="margin-top: 25px; font-size: 0.65rem; color: #444; letter-spacing: 1px; text-transform: uppercase;">
+            Designed by <a href="https://www.instagram.com/aalor_studio?igsh=MTdieDAyZjhmaDhneA==" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600; border-bottom: 1px solid rgba(212, 175, 55, 0.2);">Aalor Studio</a>
         </p>
     </footer>
 
-    <!-- Bottom Action Dock -->
     <div class="bottom-dock">
         <a href="https://www.google.com/maps/dir/?api=1&destination=Mr.Sandwichwala+Silver+Nest+2+Rajkot" target="_blank" class="dock-item active-map">
             <i class="fa-solid fa-location-dot"></i>
             <span>Location</span>
         </a>
-        <a href="https://wa.me/919904121023" target="_blank" class="dock-item active-wa">
+        <a href="https://wa.me/919904121023?text=Hello%20Twin%20Sheets!%20I%20saw%20your%20digital%20menu%20and%20would%20like%20to%20place%20an%20order." target="_blank" class="dock-item active-wa">
             <i class="fa-brands fa-whatsapp"></i>
             <span>WhatsApp</span>
+        </a>
+        <a href="https://www.instagram.com/twinsheets?igsh=bTlraWEwdWY2c2t6" target="_blank" class="dock-item active-ig">
+            <i class="fa-brands fa-instagram"></i>
+            <span>Instagram</span>
         </a>
         <a href="tel:+919904121023" class="dock-item active-call">
             <i class="fa-solid fa-phone"></i>
@@ -659,7 +724,7 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.body.classList.add('loaded');
-            }, 3000); // 3s duration for impact
+            }, 4000); // 4s duration for impact
         });
     </script>
 </body>

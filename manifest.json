@@ -1,0 +1,21 @@
+{
+  "name": "Twin Sheets Digital Menu",
+  "short_name": "Twin Sheets",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "description": "Order premium sandwiches directly via WhatsApp.",
+  "icons": [
+    {
+      "src": "Favicon/Twin Sheet logo 192 x 192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Favicon/Favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

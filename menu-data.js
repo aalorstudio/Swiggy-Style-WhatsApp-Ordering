@@ -259,6 +259,36 @@ function sendWhatsAppOrder() {
         return;
     }
 
+    // Trigger Success UI & Confetti
+    closeCartModal();
+    const successModal = document.getElementById('success-modal');
+    successModal.classList.add('active');
+
+    // Fire Confetti!
+    var duration = 2000;
+    var end = Date.now() + duration;
+
+    (function frame() {
+        confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#D4AF37', '#FFFFFF', '#25D366']
+        });
+        confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#D4AF37', '#FFFFFF', '#25D366']
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    }());
+
     let orderText = `Hello Twin Sheets!%0AThis is *${customerName}*. I would like to place an order from your digital menu:%0A%0A`;
     let totalPrice = 0;
     
@@ -277,11 +307,63 @@ function sendWhatsAppOrder() {
 
     orderText += `%0APlease let me know the estimated preparation time. Thank you!`;
     
-    // Twin sheets phone number
     const phone = "919727019097";
     const url = `https://wa.me/${phone}?text=${orderText}`;
-    window.open(url, '_blank');
+
+    // Wait 2 seconds for confetti, then open WhatsApp and clear cart
+    setTimeout(() => {
+        window.open(url, '_blank');
+        successModal.classList.remove('active');
+        // Clear cart after redirect
+        cart = {};
+        updateCartUI();
+    }, 2000);
 }
+
+// === PWA AND SERVICE WORKER LOGIC ===
+let deferredPrompt;
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err));
+    });
+}
+
+// Intercept Install Prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show our custom UI
+    setTimeout(() => {
+        document.getElementById('pwa-prompt').classList.add('show');
+    }, 3000); // Show 3 seconds after load
+});
+
+// Install Button Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const installBtn = document.getElementById('btn-install');
+    const closePwaBtn = document.getElementById('btn-close-pwa');
+    const pwaPrompt = document.getElementById('pwa-prompt');
+
+    if (installBtn && pwaPrompt) {
+        installBtn.addEventListener('click', async () => {
+            pwaPrompt.classList.remove('show');
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+            }
+        });
+
+        closePwaBtn.addEventListener('click', () => {
+            pwaPrompt.classList.remove('show');
+        });
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     initMenu();

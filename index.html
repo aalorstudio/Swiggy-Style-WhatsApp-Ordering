@@ -12,6 +12,8 @@
     <link rel="icon" type="image/png" href="Favicon/Favicon.png">
     <link rel="icon" sizes="192x192" href="Favicon/Twin Sheet logo 192 x 192.png">
     <link rel="apple-touch-icon" href="Favicon/Twin Sheet logo 192 x 192.png">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- SEO & Social Sharing -->
     <meta name="description" content="Savor the finest sandwiches at Twin Sheets. Explore our premium digital menu for Cheese Specials, Club Sandwiches, and more. One stop for sandwich lovers.">
@@ -956,6 +958,86 @@
         input:checked + .slider:before {
             transform: translateX(22px);
         }
+
+        /* Success Modal & PWA Prompt */
+        .success-modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid var(--accent);
+            text-align: center;
+            z-index: 5000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.2);
+        }
+        .success-modal.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+        .success-icon {
+            font-size: 4rem;
+            color: #25D366;
+            margin-bottom: 20px;
+            animation: bounce-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes bounce-in {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        
+        .pwa-prompt {
+            position: fixed;
+            top: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #222, #111);
+            border: 1px solid var(--glass-border);
+            padding: 15px 20px;
+            border-radius: 16px;
+            z-index: 4500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: top 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .pwa-prompt.show {
+            top: 20px;
+        }
+        .pwa-icon {
+            width: 45px;
+            border-radius: 10px;
+        }
+        .pwa-text { flex: 1; }
+        .pwa-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; color: var(--primary); }
+        .pwa-desc { font-size: 0.75rem; color: #888; }
+        .btn-install {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .btn-close-pwa {
+            background: transparent;
+            color: #888;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
@@ -1113,6 +1195,24 @@
             <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> 
             Send Order Details
         </button>
+    </div>
+
+    <!-- Beautiful Success Modal -->
+    <div class="success-modal" id="success-modal">
+        <i class="fa-solid fa-circle-check success-icon"></i>
+        <h2 style="font-family: 'Syne', sans-serif; font-size: 1.6rem; color: var(--accent); margin-bottom: 10px;">Order Compiled!</h2>
+        <p style="color: #ccc; font-size: 0.95rem;">Redirecting to WhatsApp to complete your order...</p>
+    </div>
+
+    <!-- PWA Install Prompt -->
+    <div class="pwa-prompt" id="pwa-prompt">
+        <img src="Favicon/Twin Sheet logo 192 x 192.png" alt="App Icon" class="pwa-icon">
+        <div class="pwa-text">
+            <div class="pwa-title">Add to Home Screen</div>
+            <div class="pwa-desc">Install Twin Sheets app for a faster ordering experience.</div>
+        </div>
+        <button class="btn-install" id="btn-install">Install</button>
+        <button class="btn-close-pwa" id="btn-close-pwa"><i class="fa-solid fa-times"></i></button>
     </div>
 
     <script src="menu-data.js"></script>

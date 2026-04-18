@@ -22,7 +22,11 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "01aa5e7d-2b8f-4c72-b995-717265f100d2",
+          notifyButton: {
+            enable: true,
+          },
         });
+        OneSignal.Slidedown.promptPush();
       });
     </script>
 

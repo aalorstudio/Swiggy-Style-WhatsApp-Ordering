@@ -5,7 +5,10 @@ const urlsToCache = [
   './menu-data.js',
   './manifest.json',
   './logo/1.png',
-  './Favicon/Twin Sheet logo 192 x 192.png'
+  './Favicon/Twin Sheet logo 192 x 192.png',
+  './Favicon/Favicon.png',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css',
+  'https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;600&display=swap'
 ];
 
 // Install SW

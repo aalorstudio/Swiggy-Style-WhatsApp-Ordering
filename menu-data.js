@@ -320,51 +320,6 @@ function sendWhatsAppOrder() {
     }, 2000);
 }
 
-// === PWA AND SERVICE WORKER LOGIC ===
-let deferredPrompt;
-
-// Register Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err));
-    });
-}
-
-// Intercept Install Prompt
-window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing on mobile
-    e.preventDefault();
-    deferredPrompt = e;
-    
-    // Show our custom UI
-    setTimeout(() => {
-        document.getElementById('pwa-prompt').classList.add('show');
-    }, 3000); // Show 3 seconds after load
-});
-
-// Install Button Logic
-document.addEventListener('DOMContentLoaded', () => {
-    const installBtn = document.getElementById('btn-install');
-    const closePwaBtn = document.getElementById('btn-close-pwa');
-    const pwaPrompt = document.getElementById('pwa-prompt');
-
-    if (installBtn && pwaPrompt) {
-        installBtn.addEventListener('click', async () => {
-            pwaPrompt.classList.remove('show');
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
-                deferredPrompt = null;
-            }
-        });
-
-        closePwaBtn.addEventListener('click', () => {
-            pwaPrompt.classList.remove('show');
-        });
-    }
-});
-
 document.addEventListener('DOMContentLoaded', () => {
     initMenu();
 });

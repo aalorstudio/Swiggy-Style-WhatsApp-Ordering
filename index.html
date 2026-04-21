@@ -1337,8 +1337,9 @@
         const btnInstall = document.getElementById('btn-install');
         const btnClosePwa = document.getElementById('btn-close-pwa');
 
-        // Check if device is iOS
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        // Robust Device Detection
+        const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) || 
+                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
         // Service Worker Registration
@@ -1350,49 +1351,60 @@
             });
         }
 
-        // Show prompt for Android/Chrome
+        // Handle native install prompt (Android/Chrome)
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Only show if not already in standalone mode
             if (!isStandalone) {
                 setTimeout(() => {
                     pwaPrompt.classList.add('show');
-                }, 8000); // Show after some engagement
+                }, 3000); // Show sooner for impact
             }
         });
 
-        // Show custom prompt for iOS if not installed
-        window.addEventListener('load', () => {
-            if (isIOS && !isStandalone) {
-                const pwaText = pwaPrompt.querySelector('.pwa-desc');
-                pwaText.innerHTML = 'Tap <i class="fa-solid fa-share-from-square"></i> and then "Add to Home Screen" to install.';
-                btnInstall.style.display = 'none'; // Hide install button on iOS
-                
-                setTimeout(() => {
-                    pwaPrompt.classList.add('show');
-                }, 10000); // Show after 10s on iOS
-            }
-        });
+        // iOS Specific UI Logic
+        if (isIOS && !isStandalone) {
+            setTimeout(() => {
+                pwaPrompt.classList.add('show');
+                // Change button text for iOS to guide user
+                btnInstall.innerText = "Install Now";
+            }, 5000); // Show after 5s on iOS
+        }
 
         btnInstall.addEventListener('click', () => {
             if (deferredPrompt) {
+                // Android/Chrome native prompt
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
+                        pwaPrompt.classList.remove('show');
                     }
-                    pwaPrompt.classList.remove('show');
                     deferredPrompt = null;
                 });
+            } else if (isIOS) {
+                // Custom iOS instructions
+                const pwaText = pwaPrompt.querySelector('.pwa-desc');
+                pwaText.innerHTML = '<span style="color: var(--accent); font-weight: 700;">To Install:</span> Tap the <i class="fa-solid fa-share-from-square"></i> icon at the bottom of Safari, then scroll down and tap <span style="color: var(--accent); font-weight: 700;">"Add to Home Screen"</span>.';
+                btnInstall.style.display = 'none';
+                pwaPrompt.style.top = '50%';
+                pwaPrompt.style.transform = 'translate(-50%, -50%) scale(1.1)';
+                pwaPrompt.style.textAlign = 'center';
+                pwaPrompt.style.flexDirection = 'column';
+                pwaPrompt.style.padding = '30px';
+                pwaPrompt.style.background = 'rgba(10, 10, 10, 0.98)';
+                pwaPrompt.style.border = '2px solid var(--accent)';
             }
         });
 
         btnClosePwa.addEventListener('click', () => {
             pwaPrompt.classList.remove('show');
+            // Reset styles if it was expanded for iOS
+            setTimeout(() => {
+                pwaPrompt.style = '';
+            }, 600);
         });
 
-        // Clear prompt if already installed
+        // Hide if already installed
         if (isStandalone) {
             pwaPrompt.style.display = 'none';
         }
